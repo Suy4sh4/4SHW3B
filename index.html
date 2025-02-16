@@ -259,6 +259,87 @@
             left: 0;
             z-index: 1;
         }
+        .reviews-container {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 350px;
+            height: 110px;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .reviews {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+
+        .review {
+            min-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .review-name {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .review-stars {
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .review-stars .star-outline {
+            opacity: 0.3;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            max-width: 280px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .review-nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 11;
+        }
+
+        .review-nav button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            opacity: 0.7;
+            padding: 8px;
+        }
+
+        .review-nav button:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
 
         @media (max-width: 768px) {
             .header {
@@ -267,6 +348,7 @@
 
             .logo {
                 font-size: 1.8rem;
+                display: none;
             }
 
             .score-container {
@@ -287,6 +369,7 @@
 
             .difficulty-indicator {
                 right: 20px;
+                display: none;
             }
 
             .difficulty-label {
@@ -310,6 +393,7 @@
         @media (max-width: 480px) {
             .logo {
                 font-size: 1.5rem;
+                display: none;
             }
 
             .score-container {
@@ -335,6 +419,7 @@
 
             .difficulty-indicator {
                 top: 15px;
+                display: none;
             }
 
             .difficulty-label {
@@ -372,6 +457,7 @@
         @media (max-width: 320px) {
             .logo {
                 font-size: 1.3rem;
+                display: none;
             }
 
             .score-label {
@@ -442,6 +528,30 @@
                 Experience the next generation of aim training with our advanced 3D targeting system.
             </div>
             <button class="button" id="startButton">Start Training</button>
+        </div>
+
+        <div class="reviews-container">
+            <div class="reviews" id="reviews">
+                <div class="review">
+                    <div class="review-name">Alex Thompson</div>
+                    <div class="review-stars">★★★★★</div>
+                    <div class="review-text">"This trainer helped improve my accuracy by 40%. The 3D targets make practice feel realistic."</div>
+                </div>
+                <div class="review">
+                    <div class="review-name">Sarah Chen</div>
+                    <div class="review-stars">★★★★<span class="star-outline">★</span></div>
+                    <div class="review-text">"Best aim trainer I've used. The dynamic targets and smooth animations are perfect."</div>
+                </div>
+                <div class="review">
+                    <div class="review-name">Marcus Rodriguez</div>
+                    <div class="review-stars">★★★★<span class="star-outline">★</span></div>
+                    <div class="review-text">"Incredible tool for improving reaction time and precision. Highly recommended."</div>
+                </div>
+            </div>
+            <div class="review-nav">
+                <button onclick="prevReview()"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="nextReview()"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
 
         <canvas id="gameCanvas"></canvas>
@@ -756,6 +866,24 @@
 
             spawnTarget();
         });
+         // Reviews slider
+         let currentReview = 0;
+        const reviews = document.getElementById('reviews');
+        const totalReviews = 3;
+
+        function showReview(index) {
+            reviews.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function nextReview() {
+            currentReview = (currentReview + 1) % totalReviews;
+            showReview(currentReview);
+        }
+
+        function prevReview() {
+            currentReview = (currentReview - 1 + totalReviews) % totalReviews;
+            showReview(currentReview);
+        }
 
         // Animation
         function animate(currentTime) {
