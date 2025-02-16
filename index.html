@@ -651,44 +651,55 @@
 
         // Create target
         function createTarget() {
-            if (!gameStarted || isGamePaused || targets.length >= maxTargets) return;
+    if (!gameStarted || isGamePaused || targets.length >= maxTargets) return;
 
-            const target = new THREE.Mesh(targetGeometry, targetMaterial);
-            let position = new THREE.Vector3(
-                (Math.random() - 0.5) * 8,
-                (Math.random() - 0.5) * 4,
-                (Math.random() - 0.5) * 2
-            );
+    const target = new THREE.Mesh(targetGeometry, targetMaterial);
+    
+    // Calculate viewport dimensions at camera's z position
+    const vFOV = THREE.MathUtils.degToRad(camera.fov); // convert vertical fov to radians
+    const height = 2 * Math.tan(vFOV / 2) * Math.abs(camera.position.z); // visible height
+    const width = height * camera.aspect; // visible width
+    
+    // Add safety margin to keep targets fully visible (0.8 = 80% of max size)
+    const safeWidth = width * 0.8;
+    const safeHeight = height * 0.8;
+    
+    // Calculate spawn position within safe bounds
+    let position = new THREE.Vector3(
+        (Math.random() - 0.5) * safeWidth,
+        (Math.random() - 0.5) * safeHeight,
+        (Math.random() - 0.5) * 1 // Keep depth movement minimal
+    );
 
-            // Check for overlap and regenerate position if needed
-            let attempts = 0;
-            while (checkOverlap(position) && attempts < 10) {
-                position = new THREE.Vector3(
-                    (Math.random() - 0.5) * 8,
-                    (Math.random() - 0.5) * 4,
-                    (Math.random() - 0.5) * 2
-                );
-                attempts++;
+    // Check for overlap and regenerate position if needed
+    let attempts = 0;
+    while (checkOverlap(position) && attempts < 10) {
+        position = new THREE.Vector3(
+            (Math.random() - 0.5) * safeWidth,
+            (Math.random() - 0.5) * safeHeight,
+            (Math.random() - 0.5) * 1
+        );
+        attempts++;
+    }
+
+    if (attempts < 10) {
+        target.position.copy(position);
+        target.userData.creationTime = Date.now();
+        target.userData.originalPosition = target.position.clone();
+        targets.push(target);
+        scene.add(target);
+
+        // Remove target after random duration
+        const duration = Math.random() * 3000 + 7000; // 7-10 seconds
+        setTimeout(() => {
+            if (targets.includes(target)) {
+                scene.remove(target);
+                targets = targets.filter(t => t !== target);
+                missTarget();
             }
-
-            if (attempts < 10) {
-                target.position.copy(position);
-                target.userData.creationTime = Date.now();
-                target.userData.originalPosition = target.position.clone();
-                targets.push(target);
-                scene.add(target);
-
-                // Remove target after random duration
-                const duration = Math.random() * 3000 + 7000; // 7-10 seconds
-                setTimeout(() => {
-                    if (targets.includes(target)) {
-                        scene.remove(target);
-                        targets = targets.filter(t => t !== target);
-                        missTarget();
-                    }
-                }, duration);
-            }
-        }
+        }, duration);
+    }
+}
 
         // Target explosion effect
         function createExplosion(position) {
