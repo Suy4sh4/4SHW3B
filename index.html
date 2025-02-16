@@ -6,6 +6,7 @@
     <title>4SH - Advanced Aim Trainer</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #00ffbb;
@@ -213,45 +214,75 @@
             margin: 0 auto 25px;
             letter-spacing: 0.5px;
         }
+        .button-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
 
-        .button {
-            font-family: 'Orbitron', sans-serif;
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            min-width: 180px;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: var(--dark);
-            box-shadow: 0 0 20px rgba(0, 255, 187, 0.3);
-        }
+.button-primary {
+    font-family: 'Orbitron', sans-serif;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    min-width: 180px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: var(--dark);
+    box-shadow: 0 0 20px rgba(0, 255, 187, 0.3);
+}
 
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 255, 187, 0.5);
-        }
+.button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(0, 255, 187, 0.5);
+}
 
-        .button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
+.button-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
 
-        .button:hover::before {
-            left: 100%;
-        }
+.button-primary:hover::before {
+    left: 100%;
+}
+
+.button-secondary {
+    font-family: 'Orbitron', sans-serif;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    min-width: 180px;
+    background: transparent;
+    color: var(--text);
+    backdrop-filter: blur(5px);
+}
+
+.button-secondary:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(0, 255, 187, 0.2);
+    background: rgba(0, 255, 187, 0.1);
+}
 
         #gameCanvas {
             position: fixed;
@@ -388,6 +419,15 @@
                 width: 8px;
                 height: 8px;
             }
+            .button-container {
+        flex-direction: column;
+    }
+
+    .button-primary, .button-secondary {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+        min-width: 160px;
+    }
         }
 
         @media (max-width: 480px) {
@@ -480,11 +520,11 @@
                 font-size: 1.5rem;
             }
 
-            .button {
-                padding: 8px 20px;
-                font-size: 0.8rem;
-                min-width: 140px;
-            }
+            .button-primary, .button-secondary {
+        padding: 8px 20px;
+        font-size: 0.8rem;
+        min-width: 140px;
+    }
         }
     </style>
 </head>
@@ -527,7 +567,10 @@
             <div class="sub-text">
                 Experience the next generation of aim training with our advanced 3D targeting system.
             </div>
-            <button class="button" id="startButton">Start Training</button>
+            <div class="button-container">
+                <button class="button-primary" onclick="window.location.href='https://yourwebsite.com'">Check Website</button>
+                <button class="button-secondary" id="startButton">Start Training</button>
+            </div>
         </div>
 
         <div class="reviews-container">
@@ -895,6 +938,16 @@
             currentReview = (currentReview - 1 + totalReviews) % totalReviews;
             showReview(currentReview);
         }
+
+        // Dynamic Text
+        const phrases = ["Train Like a Pro.", "Aim Better, Win Faster.", "Master Your Aim."];
+        let phraseIndex = 0;
+        const dynamicText = document.getElementById("dynamicText");
+
+        setInterval(() => {
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+            dynamicText.textContent = phrases[phraseIndex];
+        }, 3000);
 
         // Animation
         function animate(currentTime) {
